@@ -1,5 +1,8 @@
 // SiteScout service worker — offline app shell.
-const CACHE = "sitescout-v1";
+// Version arrives via the ?v= query set at registration (app.js APP_VERSION),
+// so bumping the app version automatically names a fresh cache and evicts old ones.
+const VERSION = new URL(self.location.href).searchParams.get("v") || "dev";
+const CACHE = "sitescout-" + VERSION;
 const SHELL = [
   "./",
   "index.html",

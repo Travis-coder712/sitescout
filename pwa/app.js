@@ -1,5 +1,6 @@
 "use strict";
 
+const APP_VERSION = "1.0.0"; // single source of truth — service worker derives its cache from this
 const CFG = window.SITESCOUT_CONFIG || {};
 const LS = {
   access: "sitescout.access",
@@ -328,7 +329,13 @@ window.addEventListener("offline", updateOffline);
 updateOffline();
 processQueue();
 
+// ---- Version tag ----------------------------------------------------------
+const versionTag = $("#versionTag");
+if (versionTag) versionTag.textContent = "SiteScout v" + APP_VERSION;
+
 // ---- Service worker -------------------------------------------------------
+// Pass the version in the query so a bump forces the browser to reinstall the SW.
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("service-worker.js").catch(() => {}));
+  window.addEventListener("load", () =>
+    navigator.serviceWorker.register("service-worker.js?v=" + APP_VERSION).catch(() => {}));
 }
