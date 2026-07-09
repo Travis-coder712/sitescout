@@ -63,6 +63,30 @@ Open the app, tap **⚙**, enter the **access code** you chose in step 2. Share 
 
 ---
 
+## Local test (recommended before going public)
+
+Verify one real scan against a locally-running Worker — no Cloudflare deploy, no browser/CORS needed. You only need an Anthropic key.
+
+```bash
+cd ~/Claude/sitescout/worker
+cp .dev.vars.example .dev.vars        # then edit: paste your sk-ant-... key + pick any ACCESS_CODE
+npx wrangler dev                      # starts the Worker at http://localhost:8787
+```
+
+In a second terminal:
+```bash
+cd ~/Claude/sitescout/worker
+# Fastest smoke test (no photo) — proves the key works:
+curl -s -X POST http://localhost:8787 \
+  -H "content-type: application/json" \
+  -H "x-sitescout-access: <the ACCESS_CODE you set>" \
+  -d '{"mode":"jsea","text":"Excavator test pits beside a rural road, one worker, summer."}' | jq .
+
+# Full vision path — send a real site photo:
+./test-scan.sh ~/path/to/site-photo.jpg
+```
+You should get back structured JSON (summary, hazards, questions…). Once that looks right, deploy for real (step 2 above) and you're confident the AI path works.
+
 ## Cost & safety notes
 - Model: `claude-sonnet-5` (good vision accuracy, fast/cheap on mobile). Swap in `worker/worker.js` if you want deeper analysis (`claude-opus-4-8`) or enable adaptive thinking.
 - The access code stops random public use. For extra protection, add a **Rate Limiting** rule in the Cloudflare dashboard on the Worker route.
