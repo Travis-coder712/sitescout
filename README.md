@@ -12,6 +12,23 @@ Results render on screen, save to a local history, and share via the phone's nat
 
 > ⚠️ SiteScout **prompts a competent person**. It does not replace a formal risk assessment (JSEA/SWMS) or a qualified HSE advisor. Verify everything on site.
 
+## Status — live (deployed & verified 2026-07-09)
+
+| | |
+|---|---|
+| **App (PWA)** | <https://travis-coder712.github.io/sitescout/> |
+| **Worker (AI proxy)** | `https://sitescout.travishughes-836.workers.dev` |
+| **Repo** | <https://github.com/Travis-coder712/sitescout> |
+| **Version** | v1.0.0 |
+
+To use the app: open it on your phone → **Add to Home Screen** → tap **⚙** and enter the team **access code**.
+
+### Deploying updates
+- **App / PWA** — edit files in `pwa/`, then `git push` to `main`. GitHub Actions redeploys Pages automatically (triggers on `pwa/**`). Bump `APP_VERSION` in `pwa/app.js` to refresh cached installs.
+- **Worker** — `cd worker && npx wrangler deploy` (already authenticated). Secrets persist; only re-run `wrangler secret put …` if the key or access code changes.
+
+The **one-time setup** below is kept as a reference for standing the stack up from scratch (new account, or a fork).
+
 ## Architecture
 
 ```
