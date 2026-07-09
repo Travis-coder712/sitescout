@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f1720" />
+  <title>SiteScout — HSE field companion</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark">◎</span>
+      <div>
+        <h1>SiteScout</h1>
+        <p class="tagline">HSE field companion</p>
+      </div>
+    </div>
+    <button id="settingsBtn" class="icon-btn" aria-label="Settings">⚙</button>
+  </header>
+
+  <div id="offlineBanner" class="offline-banner" hidden>Offline — captures are saved and analysed when you're back in coverage.</div>
+
+  <main>
+    <!-- SCAN -->
+    <section id="tab-scan" class="tab active">
+      <h2>Scan a work site</h2>
+      <p class="hint">Take or upload a photo of the work area (rig, excavation, access track, laydown). SiteScout flags hazards and things to look out for.</p>
+      <label class="capture">
+        <input type="file" id="scanInput" accept="image/*" capture="environment" hidden />
+        <span class="capture-btn">📷 Take / choose photo</span>
+      </label>
+      <img id="scanPreview" class="preview" hidden alt="Selected site photo" />
+      <input type="text" id="scanNote" class="field" placeholder="Optional: what's happening here? (e.g. test pitting, roadside)" />
+      <button id="scanRun" class="primary" disabled>Analyse site</button>
+    </section>
+
+    <!-- PRE-START -->
+    <section id="tab-prestart" class="tab">
+      <h2>Pre-start (work not begun)</h2>
+      <p class="hint">No site yet? Review your JSEA, or describe the job — SiteScout returns questions and hazards to plan for.</p>
+      <div class="segmented">
+        <button class="seg active" data-pre="jsea">Review a JSEA</button>
+        <button class="seg" data-pre="describe">Describe the job</button>
+      </div>
+      <textarea id="preText" class="field area" placeholder="Paste your JSEA text, or describe the planned work (e.g. 'excavator test pits, roadside, semi-rural, summer, one worker')."></textarea>
+      <button id="preRun" class="primary" disabled>Get prompts</button>
+    </section>
+
+    <!-- JOURNEY -->
+    <section id="tab-journey" class="tab">
+      <h2>Journey plan</h2>
+      <p class="hint">Plan the drive to a remote site. Breaks are inserted at the 2-hour rule; SiteScout adds route hazards and a check-in.</p>
+      <input type="text" id="jFrom" class="field" placeholder="From (e.g. Melbourne depot)" />
+      <input type="text" id="jTo" class="field" placeholder="To (e.g. site near Bendigo)" />
+      <label class="row-label">Estimated driving time (hours)
+        <input type="number" id="jHours" class="field" min="0" step="0.5" placeholder="e.g. 3.5" />
+      </label>
+      <div id="breakPlan" class="break-plan" hidden></div>
+      <input type="text" id="jContact" class="field" placeholder="Check-in contact (name / number)" />
+      <input type="text" id="jNotes" class="field" placeholder="Notes: unsealed roads, fuel, weather…" />
+      <button id="jRun" class="primary">Build journey plan</button>
+    </section>
+
+    <!-- HISTORY -->
+    <section id="tab-history" class="tab">
+      <h2>History</h2>
+      <p class="hint">Saved on this device only.</p>
+      <div id="historyList" class="history-list"></div>
+    </section>
+
+    <!-- RESULTS -->
+    <div id="results" class="results" hidden></div>
+  </main>
+
+  <nav class="tabbar">
+    <button class="tabbtn active" data-tab="scan"><span>📷</span>Scan</button>
+    <button class="tabbtn" data-tab="prestart"><span>📋</span>Pre-start</button>
+    <button class="tabbtn" data-tab="journey"><span>🚗</span>Journey</button>
+    <button class="tabbtn" data-tab="history"><span>🕘</span>History</button>
+  </nav>
+
+  <!-- Settings dialog -->
+  <dialog id="settingsDlg">
+    <form method="dialog" class="settings">
+      <h3>Team access</h3>
+      <p class="hint">Enter the access code your team shared. Stored on this device only.</p>
+      <input type="password" id="accessInput" class="field" placeholder="Access code" autocomplete="off" />
+      <p class="disclaimer">SiteScout prompts a competent person. It does not replace a formal risk assessment or a qualified HSE advisor. Verify everything on site.</p>
+      <div class="dlg-actions">
+        <button value="cancel" class="ghost">Close</button>
+        <button id="saveAccess" value="default" class="primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+name = "sitescout"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# Public origin allowed to call this Worker (your GitHub Pages site).
+# Use "*" only while testing locally.
+[vars]
+ALLOWED_ORIGIN = "https://travis-coder712.github.io"
+
+# Secrets are NOT stored here. Set them after `wrangler deploy`:
+#   wrangler secret put ANTHROPIC_API_KEY
+#   wrangler secret put ACCESS_CODE
