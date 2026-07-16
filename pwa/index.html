@@ -27,12 +27,12 @@
     <!-- SCAN -->
     <section id="tab-scan" class="tab active">
       <h2>Scan a work site</h2>
-      <p class="hint">Take or upload a photo of the work area (rig, excavation, access track, laydown). SiteScout flags hazards and things to look out for.</p>
+      <p class="hint">Take or upload photos of the work area (rig, excavation, access track, laydown). Add up to 6 shots of the same site from different angles — they're analysed together as one site. SiteScout flags hazards and things to look out for.</p>
       <label class="capture">
-        <input type="file" id="scanInput" accept="image/*" capture="environment" hidden />
-        <span class="capture-btn">📷 Take / choose photo</span>
+        <input type="file" id="scanInput" accept="image/*" multiple hidden />
+        <span class="capture-btn">📷 Add photos — take or choose</span>
       </label>
-      <img id="scanPreview" class="preview" hidden alt="Selected site photo" />
+      <div id="scanThumbs" class="thumbs"></div>
       <input type="text" id="scanNote" class="field" placeholder="Optional: what's happening here? (e.g. test pitting, roadside)" />
       <button id="scanRun" class="primary" disabled>Analyse site</button>
     </section>
@@ -95,6 +95,11 @@
       </div>
       <p class="version" id="versionTag"></p>
     </form>
+  </dialog>
+
+  <!-- Photo lightbox -->
+  <dialog id="lightbox" class="lightbox">
+    <img id="lightboxImg" alt="Site photo" />
   </dialog>
 
   <div id="toast" class="toast" hidden></div>

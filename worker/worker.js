@@ -15,6 +15,7 @@
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-sonnet-5";
 const ANTHROPIC_VERSION = "2023-06-01";
+const MAX_IMAGES = 6; // photos per scan — matches the app's cap, bounds cost/latency
 
 // ---- Prompts ---------------------------------------------------------------
 
@@ -25,7 +26,7 @@ const DISCLAIMER =
 
 const SCAN_PROMPT = `${BASE_PERSONA}
 
-You are shown a photo of a work site or work activity. Identify hazards and "things to look out for". For each, give a plain-language title, the risk level, what specifically to watch for in this scene, and a suggested control framed as something to check or do. Include environmental and health items where relevant. Also list a few good practices you can see. If the image is unclear or not a work site, say so in the summary and return whatever you can.`;
+You are shown one or more photos of a work site or work activity. When several photos are provided they are different angles or details of the SAME site — treat them as one site: consolidate your findings, do not repeat the same hazard once per photo, and use the extra angles to be more confident and specific. Identify hazards and "things to look out for". For each, give a plain-language title, the risk level, what specifically to watch for in this scene, and a suggested control framed as something to check or do. Include environmental and health items where relevant. Also list a few good practices you can see. If the images are unclear or not a work site, say so in the summary and return whatever you can.`;
 
 const JSEA_PROMPT = `${BASE_PERSONA}
 
@@ -190,13 +191,28 @@ function systemFor(mode) {
 
 function buildUserContent(mode, body) {
   if (mode === "scan") {
-    if (!body.image || !body.media_type) return null;
-    return [
-      { type: "image", source: { type: "base64", media_type: body.media_type, data: body.image } },
-      { type: "text", text: body.note
-          ? `Context from the worker: ${body.note}`
-          : "Analyse this work site photo for hazards and things to look out for." },
-    ];
+    // Accept an array of photos of the same site; fall back to the older single-image shape.
+    const images = (Array.isArray(body.images) && body.images.length
+      ? body.images
+      : (body.image ? [{ data: body.image, media_type: body.media_type }] : [])
+    ).filter((im) => im && im.data && im.media_type).slice(0, MAX_IMAGES);
+    if (!images.length) return null;
+
+    const content = [];
+    images.forEach((im, i) => {
+      if (images.length > 1) content.push({ type: "text", text: `Photo ${i + 1} of ${images.length}:` });
+      content.push({ type: "image", source: { type: "base64", media_type: im.media_type, data: im.data } });
+    });
+    content.push({
+      type: "text",
+      text: [
+        images.length > 1
+          ? `These ${images.length} photos are all of the SAME work site from different angles. Analyse them together as one site and consolidate the findings.`
+          : "Analyse this work site photo for hazards and things to look out for.",
+        body.note ? `Context from the worker: ${body.note}` : "",
+      ].filter(Boolean).join(" "),
+    });
+    return content;
   }
   if (mode === "jsea") {
     if (!body.text) return null;

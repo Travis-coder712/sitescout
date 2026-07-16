@@ -81,6 +81,37 @@ h2 { font-size: 20px; margin: 4px 0 6px; }
 }
 .preview { width: 100%; border-radius: var(--radius); margin-bottom: 12px; border: 1px solid var(--line); }
 
+/* Photo thumbnail strip (scan capture) */
+.thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.thumbs:empty { display: none; }
+.thumb { position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb-num {
+  position: absolute; left: 5px; bottom: 5px; background: rgba(0,0,0,0.65);
+  color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 999px;
+}
+.thumb-x {
+  position: absolute; top: 4px; right: 4px; width: 24px; height: 24px;
+  border-radius: 50%; border: none; background: rgba(0,0,0,0.65); color: #fff;
+  font-size: 14px; line-height: 1; display: grid; place-items: center;
+}
+.thumb-count { font-size: 12px; color: var(--muted); margin: -4px 0 12px; }
+
+/* Photos shown on a result / history entry */
+.result-photos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+.result-photos img {
+  width: 100%; aspect-ratio: 1; object-fit: cover; display: block;
+  border-radius: 10px; border: 1px solid var(--line);
+}
+
+/* Lightbox */
+.lightbox { border: none; background: transparent; padding: 0; max-width: 96vw; max-height: 92vh; }
+.lightbox::backdrop { background: rgba(0,0,0,0.9); }
+.lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 12px; display: block; }
+
+/* History thumbnail */
+.hi-thumb { width: 46px; height: 46px; border-radius: 8px; object-fit: cover; border: 1px solid var(--line); flex-shrink: 0; }
+
 .primary {
   width: 100%; background: var(--accent); color: var(--accent-ink);
   border: none; border-radius: var(--radius); padding: 15px;
@@ -125,6 +156,48 @@ h2 { font-size: 20px; margin: 4px 0 6px; }
 }
 .result-summary { font-size: 15px; line-height: 1.5; }
 .result-summary strong { color: var(--accent); }
+
+/* Findings tally */
+.stats { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 12px; }
+.stats-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.stats-row + .stats-row { margin-top: 6px; }
+.stat {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px;
+  padding: 4px 9px; border-radius: 999px; background: var(--surface-2);
+  color: var(--muted); border: 1px solid var(--line);
+}
+.stat b { font-size: 12px; margin-right: 2px; }
+.stat.risk-high { color: var(--high); border-color: rgba(255,90,90,0.35); background: rgba(255,90,90,0.10); }
+.stat.risk-medium { color: var(--medium); border-color: rgba(224,160,32,0.35); background: rgba(224,160,32,0.10); }
+.stat.risk-low { color: #9db4c9; }
+.stat.cat.safety { color: var(--safety); border-color: rgba(255,107,87,0.30); }
+.stat.cat.environment { color: var(--environment); border-color: rgba(53,200,138,0.30); }
+.stat.cat.health { color: var(--health); border-color: rgba(74,168,255,0.30); }
+
+/* Collapsible risk groups */
+.risk-group { margin-bottom: 10px; }
+.risk-group > summary {
+  list-style: none; cursor: pointer;
+  display: flex; align-items: center; gap: 9px;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 10px; padding: 12px 14px; font-size: 15px; font-weight: 600;
+}
+.risk-group > summary::-webkit-details-marker { display: none; }
+.risk-group > summary::after {
+  content: "▸"; margin-left: auto; color: var(--muted); font-size: 12px;
+  transition: transform 0.15s ease;
+}
+.risk-group[open] > summary::after { transform: rotate(90deg); }
+.risk-group[open] > summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.grp-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.grp-dot.high { background: var(--high); box-shadow: 0 0 8px var(--high); }
+.grp-dot.medium { background: var(--medium); }
+.grp-dot.low { background: var(--low); }
+.grp-count {
+  background: var(--surface-2); color: var(--muted); border: 1px solid var(--line);
+  font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 700;
+}
+.grp-body { padding: 10px 0 2px; }
 
 .hazard {
   border-left: 4px solid var(--low); background: var(--surface-2);
